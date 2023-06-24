@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="loginEmail">Email</label>
+        <input type="email" id="loginEmail" required>
+        <label for="loginPassword">Password</label>
+        <input type="password" id="loginPassword" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+
+        // Xử lý sự kiện đăng nhập
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            axios.post('http://127.0.0.1:5000/api/login', { email, password })
+                .then(function (response) {
+                    console.log('Logged in successfully');
+                    const token = response.data.token;
+                    // Chuyển hướng đến trang chính 
+                    window.location.href = 'http://127.0.0.1:5500/frontend-client/Tranglogin.html';
+                    // Lưu token vào localStorage hoặc cookie để sử dụng trong các yêu cầu sau này
+                })
+                .catch(function (error) {
+                    console.error(error.response.data.message);
+                });
+        });
+    </script>
+</body>
+
+</html>

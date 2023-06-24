@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Management</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <h1>Product Management</h1>
+
+    <h2>Product List</h2>
+    <ul class="product-list">
+        <!-- Placeholder for product list items -->
+    </ul>
+
+    <h2>Add Product</h2>
+    <div class="form-container">
+        <form id="addProductForm">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" required></textarea>
+
+            <label for="price">Price:</label>
+            <input type="number" id="price" name="price" required>
+
+            <label for="category">Category:</label>
+            <input type="text" id="category" name="category" required>
+
+            <label for="brand">Brand:</label>
+            <input type="text" id="brand" name="brand" required>
+
+            <label for="availability">Availability:</label>
+            <input type="text" id="availability" name="availability" required>
+
+            <label for="rating">Rating:</label>
+            <input type="number" id="rating" name="rating" required>
+
+            <label for="image">Image:</label>
+            <input type="file" id="image" name="image" required>
+
+            <button type="submit">Add Product</button>
+        </form>
+        <div id="errorContainer" class="error-message"></div>
+    </div>
+
+    <script>
+        // JavaScript code for interacting with the API endpoints
+        const productForm = document.getElementById("addProductForm");
+        const errorContainer = document.getElementById("errorContainer");
+
+        productForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const formData = new FormData(productForm);
+            try {
+                const response = await fetch("http://127.0.0.1:5000/api/products", {
+                    method: "POST",
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    productForm.reset();
+                    errorContainer.textContent = "";
+                    const product = await response.json();
+                    addProductToList(product);
+                } else {
+                    const error = await response.json();
+                    errorContainer.textContent = error.message;
+                }
+            } catch (error) {
+                errorContainer.textContent = "Failed to connect to the server.";
+                console.error(error);
+            }
+        });
+
+        async function fetchProducts() {
+            try {
+                const response = await fetch("http://127.0.0.1:5000/api/products");
+                const products = await response.json();
+                console.log(products)
+                products.forEach(addProductToList);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+        function addProductToList(product) {
+            const productList = document.querySelector(".product-list");
+
+            const productItem = document.createElement("li");
+            productItem.classList.add("product-item");
+
+            const productImage = document.createElement("img");
+            productImage.classList.add("product-image");
+            productImage.src = product.image_url;
+            productItem.appendChild(productImage);
+
+            const productTitle = document.createElement("h3");
+            productTitle.classList.add("product-title");
+            productTitle.textContent = product.name;
+            productItem.appendChild(productTitle);
+
+            const productDescription = document.createElement("p");
+            productDescription.classList.add("product-description");
+            productDescription.textContent = product.description;
+            productItem.appendChild(productDescription);
+
+            const productPrice = document.createElement("p");
+            productPrice.classList.add("product-price");
+            productPrice.textContent = `Price: $${product.price}`;
+            productItem.appendChild(productPrice);
+
+            const productCategory = document.createElement("p");
+            productCategory.classList.add("product-category");
+            productCategory.textContent = `Category: ${product.category}`;
+            productItem.appendChild(productCategory);
+
+            const productBrand = document.createElement("p");
+            productBrand.classList.add("product-brand");
+            productBrand.textContent = `Brand: ${product.brand}`;
+            productItem.appendChild(productBrand);
+
+            const productAvailability = document.createElement("p");
+            productAvailability.classList.add("product-availability");
+            productAvailability.textContent = `Availability: ${product.availability}`;
+            productItem.appendChild(productAvailability);
+
+            const productRating = document.createElement("p");
+            productRating.classList.add("product-rating");
+            productRating.textContent = `Rating: ${product.rating}`;
+            productItem.appendChild(productRating);
+
+            productList.appendChild(productItem);
+        }
+
+        // Fetch products on page load
+        fetchProducts();
+    </script>
+</body>
+
+</html>
