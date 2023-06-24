@@ -63,6 +63,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       brand: req.body.brand,
       availability: req.body.availability,
       rating: req.body.rating,
+      author_id: req.body.author_id,
       // Thêm các trường dữ liệu khác tương ứng với model
     });
     post.slug = slugify(post.name || "", { lower: true, strict: true });
@@ -96,19 +97,10 @@ router.get("/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
 router.put("/:id", upload.single("image"), async (req, res) => {
   try {
-    const {
-      id,
-      name,
-      description,
-      price,
-      category,
-      brand,
-      availability,
-      rating,
-    } = req.body;
+    const { name, description, price, category, brand, availability, rating } =
+      req.body;
     let post = await Product.findById(req.params.id);
     if (!post) {
       return res.status(404).send("Product not found");
@@ -118,17 +110,23 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       const result = await cloudinary.uploader.upload(req.file.path);
       post.cloudinary_id = result.public_id;
       post.image_url = result.secure_url;
-      post.name_image = req.file.originalname; // Sửa lại tên trường name_image để phù hợp với đoạn code ở phía client
+      post.name_image = req.file.originalname;
     }
-
-    post.name = name;
     post.description = description;
     post.price = price;
     post.category = category;
     post.brand = brand;
     post.availability = availability;
     post.rating = rating;
-    post.slug = slugify(title, { lower: true, strict: true });
+    if (name) {
+      post.name = name;
+      post.slug = slugify(name, { lower: true, strict: true });
+    }
+
+    const validationError = post.validateSync();
+    if (validationError) {
+      throw validationError;
+    }
 
     await post.save();
 

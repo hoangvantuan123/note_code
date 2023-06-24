@@ -66,7 +66,7 @@ router.post('/', upload.single("image"), async (req, res) => {
 
             title: req.body.title,
             description: req.body.description,
-            content: req.body.content,
+            content: req.body.content,  
             category: req.body.category,
             author_id: req.body.author_id,
             sanitizedHtml: req.body.content,
