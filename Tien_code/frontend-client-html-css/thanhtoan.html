@@ -90,7 +90,7 @@
                            </div>
                        </div>
                        <div class="col mt-4 menu-between_one">
-                           <div class="shopping1">
+                           <div class="shopping1" id="quantity_shopping">
                                <a href="thanhtoan.html" class="menu-shopping ">
                                    <svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" fill="currentColor"
                                        class="bi bi-cart2" viewBox="0 0 16 16">
@@ -117,7 +117,7 @@
                        <i class="fa-solid fa-magnifying-glass"></i>
                    </button>
                    <div class="shopping">
-                       <a href="#" class="menu-shopping1 ">
+                       <a href="#" class="menu-shopping1 " id="quantity_shopping">
                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
                                class="bi bi-cart2" viewBox="0 0 16 16">
                                <path
@@ -1976,7 +1976,7 @@
             <div class="in4">
                 <h5>Giỏ Hàng:</h5>
                 <hr>
-                <p>Giỏ Hàng của bạn đang trống!</p>
+                <div id="cart-items"></div>
                 <div class="button boss">
                     <div>
                         <input type="submit" value="Tiếp Tục" class="btn btn-danger button">
@@ -2068,6 +2068,7 @@
         <i class="fa-solid fa-mobile-screen-button"></i>
     </div>
 </body>
+<script src="./js_all/item_product.js"></script>
 <script>
     jQuery(document).ready(function () {
         jQuery(window).scroll(function () {

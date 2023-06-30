@@ -107,15 +107,8 @@
                         </div>
                     </div>
                     <div class="col mt-4 menu-between_one">
-                        <div class="shopping1">
-                            <a href="thanhtoan.html" class="menu-shopping ">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="43" height="43" fill="currentColor"
-                                    class="bi bi-cart2" viewBox="0 0 16 16">
-                                    <path
-                                        d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" />
-                                </svg>
-                                <span>0</span>
-                            </a>
+                        <div class="shopping1"  id="quantity_shopping">
+                           
                         </div>
                     </div>
                 </div>
@@ -134,16 +127,7 @@
                     <button type="button">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
-                    <div class="shopping">
-                        <a href="#" class="menu-shopping1 ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor"
-                                class="bi bi-cart2" viewBox="0 0 16 16">
-                                <path
-                                    d="M0 2.5A.5.5 0 0 1 .5 2H2a.5.5 0 0 1 .485.379L2.89 4H14.5a.5.5 0 0 1 .485.621l-1.5 6A.5.5 0 0 1 13 11H4a.5.5 0 0 1-.485-.379L1.61 3H.5a.5.5 0 0 1-.5-.5zM3.14 5l1.25 5h8.22l1.25-5H3.14zM5 13a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0zm9-1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm-2 1a2 2 0 1 1 4 0 2 2 0 0 1-4 0z" />
-                            </svg>
-                            <span>0</span>
-                        </a>
-                    </div>
+                    
                     <button type="button" id="dots">
                         <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
                             class="bi bi-three-dots-vertical" viewBox="0 0 16 16">
@@ -3665,6 +3649,24 @@
 </body>
 <script src="./js_all/search.js"></script>
 <script>
+    // Hàm xử lý sự kiện thay đổi localStorage
+    function handleStorageChange(event) {
+        if (event.key === "cartItems") {
+            const value = event.newValue;
+            console.log("value", value);
+        }
+    }
+
+    // Đăng ký sự kiện "storage" để lắng nghe thay đổi của localStorage
+    window.addEventListener("storage", handleStorageChange);
+
+
+
+</script>
+<!-- // Tính tổng số -->
+<!-- Hiển thị giá trị ngay từ đầu dù không có sự kiện nào  -->
+<script src="./js_all/product_localstore_result.js"></script>
+<script>
     async function fetchProducts() {
         try {
             const response = await fetch('http://127.0.0.1:5000/api/products');
@@ -3703,8 +3705,8 @@
                                 <i class="fa-solid fa-star" style=" color: rgb(235, 235, 33)"></i>
                             </div>
                             <div class="name">
-                                <a href="#">${product.name}</a>
-                            </div>
+                        <a href="#" data-slug="${product.slug}">${product.name}</a>
+                    </div>
                             <div class="price">
                                 <p> $${product.price}</p>
                             </div>
@@ -3719,6 +3721,16 @@
                             </div >
                         </div >
         `;
+                const buyButton = productDiv.querySelector('.btn');
+                buyButton.addEventListener('click', () => {
+                    const slug = buyButton.parentNode.parentNode.querySelector('a').dataset.slug;
+                    fetchProductDetails(slug);
+                    const url = `http://127.0.0.1:5500/frontend-client-html-css/chitietsp.html?slug=${slug}`;
+                    window.location.href = url;
+                    console.log('Slug:', slug);
+
+                });
+
                 productsContainer.appendChild(productDiv);
             });
         } catch (error) {
@@ -3726,6 +3738,24 @@
             // Xử lý lỗi khi không thể lấy dữ liệu từ URL
         }
     }
+
+    async function fetchProductDetails(slug) {
+        try {
+            const response = await fetch(`http://127.0.0.1:5000/api/products/${slug}`);
+            if (!response.ok) {
+                throw new Error('Error fetching product details');
+            }
+
+            const product = await response.json();
+            console.log('tesst', product)
+            displayProductDetails(product);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
 
     fetchProducts();
 </script>
