@@ -83,6 +83,27 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 });
 
+
+// Tìm kiếm thông tin sản phẩm 
+// Xử lý yêu cầu tìm kiếm sản phẩm
+router.post('/search', async (req, res) => {
+  try {
+    // Giá trị searchTerm được gửi từ client.
+    const searchTerm = req.body.searchTerm;
+    const regex = new RegExp(searchTerm, 'i');
+
+    // Tìm kiếm sản phẩm với thuộc tính name hoặc description chứa searchTerm
+    const products = await Product.find({
+      $or: [{ name: regex }, { description: regex }]
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error('Lỗi khi tìm kiếm sản phẩm:', error);
+    res.status(500).json({ error: 'Đã xảy ra lỗi khi tìm kiếm sản phẩm.' });
+  }
+});
+
 router.get("/:id", async (req, res) => {
   try {
     const post = await Product.findById(req.params.id).populate("author");

@@ -83,10 +83,9 @@
                     </div>
                     <div class="col ms-4 menu-between_one">
                         <div class="search">
-                            <input type="text" placeholder="Tìm kiếm...." name="search">
-                            <button type="button">
-                                <i class="fa-solid fa-magnifying-glass"></i>
-                            </button>
+                            <input type="text" id="searchTerm" placeholder="Nhập từ khóa">
+                            <button onclick="searchProducts()">Tìm kiếm</button>
+                            <div id="searchResults"></div>
                         </div>
                     </div>
                     <div class="col menu-between_one">
@@ -3311,6 +3310,7 @@
                     <hr>
                     <div class="row gx-5 gy-5 wrapper-content1">
                         <div id="products"></div>
+                        <div id="search_products"></div>
                         <div class="col-lg-3 col-md-4 col-sm-6 ">
                             <div class="product-wrapper1">
                                 <div class="imager">
@@ -3663,7 +3663,9 @@
         <i class="fa-solid fa-mobile-screen-button"></i>
     </div>
 </body>
-<script>async function fetchProducts() {
+<script src="./js_all/search.js"></script>
+<script>
+    async function fetchProducts() {
         try {
             const response = await fetch('http://127.0.0.1:5000/api/products');
             if (!response.ok) {
